@@ -1,0 +1,19 @@
+{
+  "name": "cognitive-elite-pro",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx server/index.ts",
+    "build": "./production-build.sh",
+    "start": "node dist/server.js"
+  },
+  "dependencies": {
+    "@capacitor/android": "^7.4.2",
+    "@capacitor/cli": "^7.4.2",
+    "@capacitor/core": "^7.4.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "typescript": "5.6.3",
+    "vite": "^5.4.15"
+  }
+}
