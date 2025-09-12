@@ -1,2 +1,24 @@
-# Cognitive-Elite-Hub-Pro
-🧠 Cognitive Elite Pro - Premium brain training app with 17+ games for Google Play Store. Features memory challenges, puzzles, and 3D games. Built with React/TypeScript, ready for 2025 Google Play compliance (API 35, AAB format). Priced at $2.79 for immediate revenue generation.
+# 🧠 Cognitive Elite Pro
+
+Premium brain training app with 17+ games for Google Play Store.
+
+## Features
+- Memory challenges and cognitive puzzles
+- 3D immersive games
+- Progressive difficulty system
+- Analytics and progress tracking
+- Mobile-optimized touch controls
+
+## Technical Details
+- Built with React/TypeScript
+- 2025 Google Play compliant (API 35, AAB format)
+- Capacitor for native Android functionality
+- Automated GitHub Actions building
+
+## Revenue Model
+- Premium app priced at $2.79
+- Immediate revenue generation
+- Multi-store distribution ready
+
+## Building
+GitHub Actions automatically builds AAB files for Google Play Store submission.
