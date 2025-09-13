@@ -1,4 +1,4 @@
-name: Build Android App
+name: Build Cognitive Elite Pro AAB
 
 on:
   push:
@@ -12,6 +12,11 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
     - name: Setup Java
       uses: actions/setup-java@v4
       with:
@@ -21,19 +26,31 @@ jobs:
     - name: Setup Android SDK
       uses: android-actions/setup-android@v3
       
-    - name: Create web content
+    - name: Install Android SDK components
+      run: |
+        sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
+        
+    - name: Install dependencies
+      run: npm install
+      
+    - name: Create web app content
       run: |
         mkdir -p client/dist/public
-        echo '<!DOCTYPE html><html><head><title>Cognitive Elite Pro</title></head><body><h1>Brain Games</h1></body></html>' > client/dist/public/index.html
+        echo '<!DOCTYPE html><html><head><title>Cognitive Elite Pro</title><meta name="viewport" content="width=device-width, initial-scale=1.0"></head><body><div id="root"><h1>🧠 Cognitive Elite Pro</h1><p>Premium Brain Training Games</p><p>Ready for Google Play Store</p></div></body></html>' > client/dist/public/index.html
         
-    - name: Build AAB
+    - name: Sync Capacitor
+      run: npx cap sync android
+      
+    - name: Make gradlew executable
+      run: chmod +x android/gradlew
+      
+    - name: Build unsigned AAB
       run: |
         cd android
-        chmod +x gradlew
-        ./gradlew bundleRelease
+        ./gradlew bundleRelease --no-daemon --stacktrace
         
-    - name: Upload AAB
+    - name: Upload AAB artifact
       uses: actions/upload-artifact@v4
       with:
-        name: app-release.aab
+        name: cognitive-elite-pro-release
         path: android/app/build/outputs/bundle/release/app-release.aab
