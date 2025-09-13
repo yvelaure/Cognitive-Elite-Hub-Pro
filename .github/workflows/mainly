@@ -1,0 +1,56 @@
+name: Build Cognitive Elite Pro AAB
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+        
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+      
+    - name: Install Android SDK components
+      run: |
+        sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
+        
+    - name: Install dependencies
+      run: npm install
+      
+    - name: Create web app content
+      run: |
+        mkdir -p client/dist/public
+        echo '<!DOCTYPE html><html><head><title>Cognitive Elite Pro</title><meta name="viewport" content="width=device-width, initial-scale=1.0"></head><body><div id="root"><h1>🧠 Cognitive Elite Pro</h1><p>Premium Brain Training Games</p><p>Ready for Google Play Store</p></div></body></html>' > client/dist/public/index.html
+        
+    - name: Sync Capacitor
+      run: npx cap sync android
+      
+    - name: Make gradlew executable
+      run: chmod +x android/gradlew
+      
+    - name: Build unsigned AAB
+      run: |
+        cd android
+        ./gradlew bundleRelease --no-daemon --stacktrace
+        
+    - name: Upload AAB artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: cognitive-elite-pro-release
+        path: android/app/build/outputs/bundle/release/app-release.aab
