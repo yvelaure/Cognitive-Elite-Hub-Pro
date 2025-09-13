@@ -1,0 +1,56 @@
+name: Build Android App
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+        
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+      
+    - name: Install Android SDK components
+      run: |
+        sdkmanager "platform-tools" "platforms;android-35" "build-tools;35.0.0"
+        
+    - name: Install dependencies
+      run: npm install
+      
+    - name: Create web content
+      run: |
+        mkdir -p client/dist/public
+        echo '<!DOCTYPE html><html><head><title>Cognitive Elite Pro</title></head><body><h1>🧠 Brain Games</h1></body></html>' > client/dist/public/index.html
+        
+    - name: Sync Capacitor
+      run: npx cap sync android
+      
+    - name: Make gradlew executable
+      run: chmod +x android/gradlew
+      
+    - name: Build AAB
+      run: |
+        cd android
+        ./gradlew bundleRelease --stacktrace --no-daemon
+        
+    - name: Upload AAB
+      uses: actions/upload-artifact@v4
+      with:
+        name: app-release.aab
+        path: android/app/build/outputs/bundle/release/app-release.aab
